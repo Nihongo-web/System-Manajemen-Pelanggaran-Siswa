@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Razia HP SMKN 1 Malteng - Enterprise Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        dark: { bg: '#020617', card: '#0f172a', border: '#1e293b' }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-short': 'bounceShort 0.3s ease-in-out'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        bounceShort: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-5px)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark body {
+            background-color: #020617;
+            color: #f8fafc;
+        }
+
+        .light body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .modal-active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-active .modal-content {
+            transform: scale(1);
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        .btn-press:active {
+            transform: scale(0.97);
+        }
+
+        .wa-disabled {
+            filter: grayscale(1);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .dark .shimmer {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Custom Select Styles */
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+        }
+
+        .custom-select-trigger {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-select-options {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 0.5rem;
+        }
+
+        .dark .custom-select-options {
+            background: rgba(15, 23, 42, 0.85);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-select-wrapper.open .custom-select-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .custom-option {
+            padding: 0.75rem 1.25rem;
+            margin: 0.25rem 0;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 1rem;
+            color: #475569;
+        }
+
+        .dark .custom-option {
+            color: #94a3b8;
+        }
+
+        .custom-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            transform: translateX(5px);
+        }
+
+        .dark .custom-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #60a5fa;
+        }
+
+        .custom-option.selected {
+            background: #2563eb;
+            color: white !important;
+        }
+
+        .dark .custom-option.selected {
+            background: #3b82f6;
+            color: white !important;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen pb-24 selection:bg-brand-500/30 font-sans antialiased">
+
+    <!-- Error Boundary UI -->
+    <div id="global-error"
+        class="fixed inset-0 z-[999] bg-red-50 dark:bg-red-950 hidden items-center justify-center p-8 text-center">
+        <div class="max-w-md">
+            <h1 class="text-4xl mb-4">😵</h1>
+            <h2 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">Terjadi Kesalahan Kritis</h2>
+            <p class="text-slate-600 dark:text-slate-300 mb-6" id="error-message">Aplikasi mengalami masalah tak
+                terduga.</p>
+            <button onclick="window.location.reload()"
+                class="px-6 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition">Muat Ulang
+                Halaman</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header
+        class="sticky top-0 z-[60] bg-white/70 dark:bg-dark-bg/80 backdrop-blur-xl border-b border-slate-200 dark:border-dark-border p-4 transition-colors">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer" id="brand-logo">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-brand-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300">
+                    <span class="text-white font-bold text-xs">SMK</span>
+                </div>
+                <div>
+                    <h1
+                        class="font-extrabold text-lg md:text-xl tracking-tight leading-tight group-hover:text-brand-500 transition-colors">
+                        SMKN 1 MALTENG</h1>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase">
+                            ENTERPRISE SYSTEM V6.0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button data-action="toggle-theme"
+                    class="hidden md:block p-2.5 bg-slate-100 dark:bg-dark-card rounded-xl hover:ring-2 ring-brand-500/50 transition-all active:scale-95"
+                    aria-label="Toggle Theme">
+                    <span class="dark:hidden text-lg">🌙</span><span class="hidden dark:inline text-lg">☀️</span>
+                </button>
+                <div class="hidden md:flex items-center gap-2 ml-2">
+                    <button data-action="open-backup"
+                        class="px-4 py-2 bg-brand-600 text-white text-[11px] font-bold rounded-xl shadow-md shadow-brand-600/20 hover:bg-brand-700 transition-all uppercase btn-press flex items-center gap-2">
+                        <span>📥</span> Backup / Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 space-y-8 mt-4 animate-fade-in">
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-3 gap-3" id="stats-container">
+            <!-- Populated by JS -->
+            <div class="shimmer h-24 rounded-3xl"></div>
+            <div class="shimmer h-24 rounded-3xl"></div>
+            <div class="shimmer h-24 rounded-3xl"></div>
+        </div>
+
+        <!-- Registration Form -->
+        <section
+            class="glass-card p-6 md:p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <h2 class="text-lg font-black mb-8 flex items-center gap-3 italic tracking-tight">
+                <span
+                    class="w-10 h-10 flex items-center justify-center bg-brand-500/10 text-brand-500 rounded-2xl text-lg shadow-inner">✚</span>
+                REGISTRASI PELANGGARAN
+            </h2>
+            <form id="mainForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" novalidate>
+                <div class="space-y-4">
+                    <div class="group">
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 mb-2 ml-1 uppercase group-focus-within:text-brand-500 transition-colors">Nama
+                            Lengkap Siswa <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama" required
+                            class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-2xl outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                            placeholder="Input Nama...">
+                        <p class="text-[10px] text-red-500 mt-1 hidden" data-error="nama"></p>
+                    </div>
+                    <div class="group">
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 mb-2 ml-1 uppercase group-focus-within:text-brand-500 transition-colors">Kelas
+                            <span class="text-red-500">*</span></label>
+                        <select name="kelas" required
+                            class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-2xl outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all text-slate-600 dark:text-slate-300 appearance-none cursor-pointer">
+                            <option value="" disabled selected>Pilih Kelas...</option>
+                            <option value="TJKT 1">TJKT 1</option>
+                            <option value="TJKT 2">TJKT 2</option>
+                            <option value="TK 1">TK 1</option>
+                            <option value="TK 2">TK 2</option>
+                            <option value="MPLB">MPLB</option>
+                            <option value="AKL">AKL</option>
+                            <option value="Pemasaran">Pemasaran</option>
+                            <option value="ULP">ULP</option>
+                        </select>
+                        <p class="text-[10px] text-red-500 mt-1 hidden" data-error="kelas"></p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="group">
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 mb-2 ml-1 uppercase group-focus-within:text-brand-500 transition-colors">Nomor
+                            HP Siswa</label>
+                        <input type="tel" name="telpSiswa"
+                            class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-2xl outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                            placeholder="08...">
+                        <p class="text-[10px] text-red-500 mt-1 hidden" data-error="telpSiswa"></p>
+                    </div>
+                    <div class="group">
+                        <label
+                            class="block text-[10px] font-bold text-slate-400 mb-2 ml-1 uppercase group-focus-within:text-brand-500 transition-colors">Nomor
+                            HP Ortu (WA)</label>
+                        <input type="tel" name="telpOrtu"
+                            class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-2xl outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                            placeholder="Wajib untuk fitur WA">
+                        <p class="text-[10px] text-red-500 mt-1 hidden" data-error="telpOrtu"></p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 group">
+                    <label
+                        class="block text-[10px] font-bold text-slate-400 mb-2 ml-1 uppercase group-focus-within:text-brand-500 transition-colors">Kronologi
+                        Pelanggaran <span class="text-red-500">*</span></label>
+                    <textarea name="alasan" required
+                        class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-2xl outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all min-h-[80px] placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                        placeholder="Berikan detail kejadian..."></textarea>
+                    <p class="text-[10px] text-red-500 mt-1 hidden" data-error="alasan"></p>
+                </div>
+                <div class="md:col-span-2 pt-2">
+                    <button type="submit"
+                        class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-4 rounded-2xl transition-all shadow-lg shadow-brand-500/30 btn-press uppercase tracking-wider flex justify-center items-center gap-2">
+                        <span>💾</span> Simpan Data
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Filter and Search Section -->
+        <div
+            class="sticky top-[88px] z-40 py-2 bg-slate-50/50 dark:bg-dark-bg/50 backdrop-blur-sm transition-colors space-y-3">
+            <!-- Category Filter -->
+            <!-- Category Filter (Responsive) -->
+
+            <!-- Mobile: Select Dropdown -->
+            <div class="md:hidden relative">
+                <select id="mobile-filter"
+                    class="w-full bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border p-4 rounded-2xl outline-none focus:border-brand-500 text-slate-600 dark:text-slate-300 appearance-none font-bold uppercase text-xs cursor-pointer">
+                    <option value="all">Semua Kelas / Jurusan</option>
+                    <option value="TJKT 1">TJKT 1</option>
+                    <option value="TJKT 2">TJKT 2</option>
+                    <option value="TK 1">TK 1</option>
+                    <option value="TK 2">TK 2</option>
+                    <option value="MPLB">MPLB</option>
+                    <option value="AKL">AKL</option>
+                    <option value="Pemasaran">Pemasaran</option>
+                    <option value="ULP">ULP</option>
+                </select>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+            </div>
+
+            <!-- Desktop: Horizontal Chips -->
+            <div class="hidden md:flex gap-2 overflow-x-auto custom-scroll pb-2" id="desktop-filter-container">
+                <button data-filter="all"
+                    class="px-4 py-2 bg-brand-600 text-white rounded-full text-[10px] font-bold uppercase whitespace-nowrap shadow-lg shadow-brand-500/30 transition-all hover:scale-105 active:scale-95">
+                    Semua
+                </button>
+                <button data-filter="TJKT 1"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">TJKT
+                    1</button>
+                <button data-filter="TJKT 2"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">TJKT
+                    2</button>
+                <button data-filter="TK 1"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">TK
+                    1</button>
+                <button data-filter="TK 2"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">TK
+                    2</button>
+                <button data-filter="MPLB"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">MPLB</button>
+                <button data-filter="AKL"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">AKL</button>
+                <button data-filter="Pemasaran"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">Pemasaran</button>
+                <button data-filter="ULP"
+                    class="px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95">ULP</button>
+            </div>
+
+            <div class="relative group">
+                <input type="text" id="searchBar"
+                    class="w-full bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border pl-12 pr-4 py-4 rounded-2xl shadow-sm outline-none focus:ring-4 ring-brand-500/20 transition-all placeholder:text-slate-400"
+                    placeholder="Cari Siswa/Kelas...">
+                <span
+                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors text-xl">🔍</span>
+                <div id="loading-indicator" class="absolute right-4 top-1/2 -translate-y-1/2 hidden">
+                    <div class="w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards Container -->
+        <div id="studentContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-12 min-h-[200px]">
+            <!-- Content Injected by JS -->
+        </div>
+
+        <!-- Infinite Scroll Sentinel -->
+        <div id="sentinel"
+            class="h-10 w-full flex justify-center items-center opacity-0 transition-opacity duration-300">
+            <span class="text-slate-400 text-xs animate-pulse">Memuat lebih banyak...</span>
+        </div>
+    </main>
+
+    <!-- Modal Template (Reusable) -->
+    <template id="modal-template">
+        <div class="fixed inset-0 bg-slate-950/80 z-[100] grid place-items-center p-4 modal-backdrop"
+            aria-hidden="true">
+            <div class="bg-white dark:bg-dark-card w-full rounded-[2.5rem] p-8 border border-slate-200 dark:border-dark-border shadow-2xl modal-content"
+                role="dialog" aria-modal="true">
+                <!-- Content goes here -->
+            </div>
+        </div>
+    </template>
+
+    <!-- Specific Modals -->
+    <!-- Action Modal -->
+    <div id="actionModal"
+        class="fixed inset-0 bg-slate-950/80 z-[100] hidden flex items-center justify-center p-4 modal-backdrop"
+        aria-hidden="true">
+        <div
+            class="bg-white dark:bg-dark-card w-full max-w-sm rounded-[2.5rem] p-8 border border-slate-200 dark:border-dark-border shadow-2xl modal-content">
+            <div class="w-20 h-20 bg-brand-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <span class="text-4xl italic">⚖️</span>
+            </div>
+            <h2 class="text-xl font-black text-center mb-6">PILIH TINDAKAN</h2>
+            <div class="grid gap-3">
+                <button data-action="confirm-sita"
+                    class="w-full py-4 bg-red-600 text-white font-bold rounded-2xl hover:bg-red-700 transition-all btn-press shadow-lg shadow-red-600/20 flex flex-col items-center">
+                    <span>SITA HP</span>
+                    <span class="text-[8px] opacity-70 font-normal">BARANG BUKTI DITAHAN</span>
+                </button>
+                <button data-action="confirm-catat"
+                    class="w-full py-4 bg-slate-600 text-white font-bold rounded-2xl hover:bg-slate-700 transition-all btn-press flex flex-col items-center">
+                    <span>CATAT SAJA</span>
+                    <span class="text-[8px] opacity-70 font-normal">TIDAK ADA PENYITAAN</span>
+                </button>
+                <button data-action="close-modal"
+                    class="mt-4 py-2 text-slate-400 hover:text-slate-600 text-xs font-bold uppercase text-center">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal"
+        class="fixed inset-0 bg-slate-950/80 z-[110] hidden flex items-center justify-center p-4 modal-backdrop">
+        <div
+            class="bg-white dark:bg-dark-card w-full max-w-lg rounded-[2.5rem] p-8 border border-slate-200 dark:border-dark-border shadow-2xl modal-content">
+            <h2 class="text-xl font-black mb-6 italic">✏️ UPDATE DATA SISWA</h2>
+            <form id="editForm" class="space-y-5">
+                <input type="hidden" name="id">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1 block">Nama
+                            Lengkap</label>
+                        <input type="text" name="nama"
+                            class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-xl outline-none focus:border-brand-500"
+                            placeholder="Nama">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1 block">Kelas</label>
+                            <select name="kelas"
+                                class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-xl outline-none focus:border-brand-500 text-slate-600 dark:text-slate-300 appearance-none cursor-pointer">
+                                <option value="TJKT 1">TJKT 1</option>
+                                <option value="TJKT 2">TJKT 2</option>
+                                <option value="TK 1">TK 1</option>
+                                <option value="TK 2">TK 2</option>
+                                <option value="MPLB">MPLB</option>
+                                <option value="AKL">AKL</option>
+                                <option value="Pemasaran">Pemasaran</option>
+                                <option value="ULP">ULP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1 block">HP
+                                Siswa</label>
+                            <input type="tel" name="telpSiswa"
+                                class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-xl outline-none focus:border-brand-500"
+                                placeholder="08...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1 block">Nomor HP Ortu
+                            (WA)</label>
+                        <input type="tel" name="telpOrtu"
+                            class="w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-xl outline-none focus:border-brand-500"
+                            placeholder="Isi untuk aktifkan WhatsApp">
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" data-action="close-modal"
+                        class="flex-1 py-4 bg-slate-100 dark:bg-slate-700 rounded-2xl font-bold uppercase text-[10px]">Batal</button>
+                    <button type="submit"
+                        class="flex-1 py-4 bg-brand-600 rounded-2xl font-bold text-white shadow-lg btn-press uppercase text-[10px]">Simpan
+                        Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data/Backup Modal -->
+    <div id="dataModal"
+        class="fixed inset-0 bg-slate-950/80 z-[120] hidden flex items-center justify-center p-4 modal-backdrop">
+        <div
+            class="bg-white dark:bg-dark-card w-full max-w-sm rounded-[2.5rem] p-8 border border-slate-200 dark:border-dark-border shadow-2xl modal-content">
+            <div class="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <span class="text-4xl italic">💾</span>
+            </div>
+            <h2 class="text-xl font-black text-center mb-6">DATA DATABASE</h2>
+            <div class="grid gap-4">
+                <button data-action="export-data"
+                    class="w-full py-5 bg-slate-100 dark:bg-slate-800 rounded-2xl font-bold flex flex-col items-center group hover:bg-brand-600 hover:text-white transition-all btn-press">
+                    <span class="text-lg">📦</span>
+                    <span class="uppercase text-xs mt-1">Export Backup</span>
+                    <span class="text-[8px] opacity-60 font-normal">SIMPAN DATA KE FILE .JSON</span>
+                </button>
+
+                <label
+                    class="w-full py-5 bg-slate-100 dark:bg-slate-800 rounded-2xl font-bold flex flex-col items-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all btn-press">
+                    <span class="text-lg">📥</span>
+                    <span class="uppercase text-xs mt-1">Import Data</span>
+                    <span class="text-[8px] opacity-60 font-normal">UNGGAH FILE BACKUP LAMA</span>
+                    <input type="file" id="importInput" class="hidden" accept=".json">
+                </label>
+
+                <button data-action="delete-all"
+                    class="w-full py-5 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-2xl font-bold flex flex-col items-center group hover:bg-red-600 hover:text-white transition-all btn-press border-2 border-red-100 dark:border-red-900/30">
+                    <span class="text-lg">⚠️</span>
+                    <span class="uppercase text-xs mt-1">Reset Database</span>
+                    <span class="text-[8px] opacity-60 font-normal">HAPUS SEMUA DATA PERMANEN</span>
+                </button>
+
+                <button data-action="close-modal"
+                    class="mt-2 py-2 text-slate-400 hover:text-slate-600 text-xs font-bold uppercase text-center">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-2xl font-bold shadow-2xl transition-all duration-500 opacity-0 translate-y-20 pointer-events-none z-[200] flex items-center gap-3 border border-white/10">
+        <span id="toastIcon"></span>
+        <span id="toastMsg"></span>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div
+        class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-dark-card/90 backdrop-blur-md border-t border-slate-200 dark:border-dark-border p-4 flex justify-around z-50">
+        <button onclick="window.scrollTo({top:0, behavior:'smooth'})"
+            class="p-2 flex flex-col items-center active:scale-95 transition-transform">
+            <span class="text-xl">🏠</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Beranda</span>
+        </button>
+        <button data-action="open-backup" class="p-2 flex flex-col items-center active:scale-95 transition-transform">
+            <span class="text-xl">💾</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Data</span>
+        </button>
+        <button data-action="toggle-theme" class="p-2 flex flex-col items-center active:scale-95 transition-transform">
+            <span class="dark:hidden text-xl">🌙</span><span class="hidden dark:inline text-xl">☀️</span>
+            <span class="text-[8px] font-bold uppercase mt-1">Tema</span>
+        </button>
+    </div>
+
+    <script>
+        /**
+         * Core Application Module
+         * Implements Singleton, Factory, and SOLID principles.
+         */
+
+        // --- Utils & Helpers ---
+        const Utils = {
+            generateId: () => `ID-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            formatDate: (isoString) => new Date(isoString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+            debounce: (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => { clearTimeout(timeout); func(...args); };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+            sanitize: (str) => {
+                const temp = document.createElement('div');
+                temp.textContent = str;
+                return temp.innerHTML;
+            }
+        };
+
+        // --- Services Layer (Business Logic) ---
+
+        // 1. Storage Service (SRP: Handles Data Persistence & Safety)
+        class StorageService {
+            static KEY = 'RAZIA_APP_V6';
+
+            static save(data) {
+                try {
+                    localStorage.setItem(this.KEY, JSON.stringify(data));
+                    return true;
+                } catch (e) {
+                    console.error("Storage Limit Exceeded or Disabled", e);
+                    throw new Error("Penyimpanan penuh! Hapus beberapa data lama.");
+                }
+            }
+
+            static load() {
+                try {
+                    const data = localStorage.getItem(this.KEY);
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    console.error("Corrupt Data", e);
+                    return []; // Graceful degradation
+                }
+            }
+        }
+
+        // 2. Notification Service (SRP: Handles User Feedback)
+        class ToastSystem {
+            static show(msg, icon = '✅', type = 'info') {
+                const el = document.getElementById('toast');
+                const msgEl = document.getElementById('toastMsg');
+                const iconEl = document.getElementById('toastIcon');
+
+                msgEl.innerText = msg;
+                iconEl.innerText = icon;
+
+                // Reset classes
+                el.className = `fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 px-6 py-4 rounded-2xl font-bold shadow-2xl transition-all duration-500 z-[200] flex items-center gap-3 border border-white/10 ${type === 'error' ? 'bg-red-600 text-white' : 'bg-slate-900 text-white'}`;
+
+                // Animate In
+                requestAnimationFrame(() => {
+                    el.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+                });
+
+                // Auto hide
+                if (this.timeout) clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    el.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+                }, 3000);
+            }
+        }
+
+        // 3. Validation Service
+        class Validator {
+            static validateStudent(data) {
+                const errors = {};
+                if (!data.nama || data.nama.trim().length < 3) errors.nama = "Nama minimal 3 karakter";
+                if (!data.kelas) errors.kelas = "Kelas wajib diisi";
+                if (!data.alasan) errors.alasan = "Kronologi wajib diisi";
+
+                if (data.telpSiswa && !/^\d+$/.test(data.telpSiswa)) errors.telpSiswa = "Hanya angka diperbolehkan";
+                if (data.telpOrtu && !/^\d+$/.test(data.telpOrtu)) errors.telpOrtu = "Hanya angka diperbolehkan";
+
+                return { valid: Object.keys(errors).length === 0, errors };
+            }
+        }
+
+        // --- Domain Classes (Models) ---
+        class StudentModel {
+            constructor(data) {
+                this.id = data.id || Utils.generateId();
+                this.nama = data.nama;
+                this.kelas = data.kelas;
+                this.telpSiswa = data.telpSiswa || '';
+                this.telpOrtu = data.telpOrtu || '';
+                this.statusSitaan = data.statusSitaan || 'TIADA'; // TIADA, BELUM, SELESAI
+                this.history = data.history || [];
+            }
+
+            addViolation(reason, mode) {
+                this.history.unshift({
+                    timestamp: new Date().toISOString(),
+                    reason,
+                    mode // 'SITA', 'CATAT'
+                });
+                if (mode === 'SITA') this.statusSitaan = 'BELUM';
+            }
+
+            toggleStatus() {
+                const states = ['BELUM', 'SELESAI', 'TIADA']; // Cycle logic adjusted
+                let currIdx = states.indexOf(this.statusSitaan);
+                // If current is SELESAI or TIADA, validation might be needed depending on history
+                // For simplicity, cycle: BELUM -> SELESAI -> TIADA -> BELUM
+                if (currIdx === -1) currIdx = 0;
+                this.statusSitaan = states[(currIdx + 1) % states.length];
+            }
+        }
+
+        // 4. Custom Select Component (UI/UX)
+        class CustomSelect {
+            constructor(originalSelect) {
+                this.originalSelect = originalSelect;
+                this.originalSelect.style.display = 'none'; // Hide native select
+                this.wrapper = this.createWrapper();
+                this.originalSelect.parentNode.insertBefore(this.wrapper, this.originalSelect);
+
+                // Close when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!this.wrapper.contains(e.target)) {
+                        this.wrapper.classList.remove('open');
+                        this.wrapper.querySelector('.arrow')?.classList.remove('rotate-180');
+                    }
+                });
+            }
+
+            createWrapper() {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'custom-select-wrapper w-full';
+
+                // Trigger (The "Input" look)
+                const trigger = document.createElement('div');
+                const isMobileFilter = this.originalSelect.id === 'mobile-filter';
+                const initialText = this.originalSelect.options[this.originalSelect.selectedIndex].text;
+
+                trigger.className = `custom-select-trigger w-full bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border p-4 rounded-2xl flex justify-between items-center text-slate-600 dark:text-slate-300 font-bold text-sm outline-none hover:border-brand-500 hover:ring-2 hover:ring-brand-500/10 transition-all ${isMobileFilter ? 'bg-white dark:bg-dark-card' : ''}`;
+
+                trigger.innerHTML = `<span>${initialText}</span><span class="arrow transition-transform duration-300">▼</span>`;
+
+                trigger.addEventListener('click', () => {
+                    wrapper.classList.toggle('open');
+                    trigger.querySelector('.arrow').classList.toggle('rotate-180');
+                });
+
+                // Options Container
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'custom-select-options custom-scroll';
+
+                Array.from(this.originalSelect.options).forEach(opt => {
+                    if (opt.disabled) return; // Skip disabled placeholders
+
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = `custom-option ${opt.selected ? 'selected' : ''}`;
+                    optionDiv.textContent = opt.text;
+                    optionDiv.dataset.value = opt.value;
+
+                    optionDiv.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent wrapper close immediately
+                        this.selectOption(opt.value, opt.text, trigger, optionsContainer);
+                    });
+
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                wrapper.appendChild(trigger);
+                wrapper.appendChild(optionsContainer);
+                return wrapper;
+            }
+
+            selectOption(value, text, trigger, container) {
+                // Update Native Select
+                this.originalSelect.value = value;
+                this.originalSelect.dispatchEvent(new Event('change')); // Trigger change event logic
+
+                // Update UI
+                trigger.querySelector('span').textContent = text;
+                this.wrapper.classList.remove('open');
+                trigger.querySelector('.arrow').classList.remove('rotate-180');
+
+                // Update Selected Visuals
+                container.querySelectorAll('.custom-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.dataset.value === value) opt.classList.add('selected');
+                });
+            }
+
+            // Public method to update UI if value changed externally
+            updateUI(value) {
+                const option = Array.from(this.originalSelect.options).find(o => o.value === value);
+                if (option) {
+                    this.wrapper.querySelector('.custom-select-trigger span').textContent = option.text;
+                    this.wrapper.querySelectorAll('.custom-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.dataset.value === value) opt.classList.add('selected');
+                    });
+                }
+            }
+        }
+
+        // --- Presentation Layer (UI Renderer) ---
+        class DOMRenderer {
+            constructor() {
+                this.container = document.getElementById('studentContainer');
+                this.statsContainer = document.getElementById('stats-container');
+                this.observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting) {
+                        document.dispatchEvent(new CustomEvent('req-load-more'));
+                    }
+                }, { rootMargin: '100px' });
+                this.sentinel = document.getElementById('sentinel');
+                if (this.sentinel) this.observer.observe(this.sentinel);
+            }
+
+            renderStats(students) {
+                const total = students.length;
+                const sita = students.filter(s => s.statusSitaan === 'BELUM').length;
+                const clear = students.filter(s => s.statusSitaan === 'SELESAI').length;
+
+                this.statsContainer.innerHTML = `
+                    <div class="bg-white dark:bg-dark-card p-4 rounded-3xl border border-slate-200 dark:border-dark-border shadow-sm text-center transform hover:scale-105 transition-transform duration-300">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Siswa</p>
+                        <h4 class="text-xl font-black italic text-slate-800 dark:text-white">${total}</h4>
+                    </div>
+                    <div class="bg-white dark:bg-dark-card p-4 rounded-3xl border border-slate-200 dark:border-dark-border shadow-sm text-center transform hover:scale-105 transition-transform duration-300">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Disita</p>
+                        <h4 class="text-xl font-black text-red-500 italic">${sita}</h4>
+                    </div>
+                    <div class="bg-white dark:bg-dark-card p-4 rounded-3xl border border-slate-200 dark:border-dark-border shadow-sm text-center transform hover:scale-105 transition-transform duration-300">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Selesai</p>
+                        <h4 class="text-xl font-black text-emerald-500 italic">${clear}</h4>
+                    </div>
+                `;
+            }
+
+            createCard(s) {
+                const el = document.createElement('div');
+                const hasWarning = s.history.length >= 3;
+
+                el.className = `bg-white dark:bg-dark-card border-2 ${s.statusSitaan === 'BELUM' ? 'border-red-500/40' : 'border-slate-200 dark:border-dark-border'} rounded-[2.5rem] p-6 md:p-8 transition-all hover:shadow-xl animate-slide-up group relative overflow-hidden`;
+
+                // Status Badge Logic
+                let badge = `<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 text-[8px] px-2.5 py-1 rounded-lg font-black uppercase tracking-wider">Aman</span>`;
+                if (s.statusSitaan === 'BELUM') badge = `<span class="bg-red-500 text-white text-[8px] px-2.5 py-1 rounded-lg font-black animate-pulse uppercase tracking-wider shadow-lg shadow-red-500/30">Disita</span>`;
+                if (s.statusSitaan === 'SELESAI') badge = `<span class="bg-emerald-500 text-white text-[8px] px-2.5 py-1 rounded-lg font-black uppercase tracking-wider shadow-lg shadow-emerald-500/30">Selesai</span>`;
+
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-6 relative z-10">
+                        <div class="cursor-pointer" onclick="App.dispatchEvent('req-edit', '${s.id}')">
+                            <h3 class="text-xl font-black text-slate-800 dark:text-white group-hover:text-brand-500 transition-colors">${Utils.sanitize(s.nama)}</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-1">${Utils.sanitize(s.kelas)} • ${s.telpSiswa || 'No Phone'}</p>
+                        </div>
+                        <button onclick="App.dispatchEvent('req-delete', '${s.id}')" class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus Data">
+                            <span class="text-sm">🗑️</span>
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-dark-bg p-5 rounded-3xl mb-6 border border-slate-100 dark:border-slate-800/50">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic flex items-center gap-1">
+                                <span>History</span>
+                                <span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 rounded text-[8px]">${s.history.length}</span>
+                            </span>
+                            ${badge}
+                        </div>
+                        <div class="space-y-4 max-h-32 overflow-y-auto custom-scroll pr-2">
+                            ${s.history.map(h => `
+                                <div class="relative pl-4 border-l-2 border-slate-200 dark:border-slate-700">
+                                    <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full ${h.mode === 'SITA' ? 'bg-red-500' : 'bg-slate-400'}"></div>
+                                    <div class="flex justify-between items-start">
+                                         <p class="text-[8px] font-bold text-slate-400 uppercase mb-0.5">${Utils.formatDate(h.timestamp)} • ${h.mode}</p>
+                                    </div>
+                                    <p class="text-xs italic text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2 hover:line-clamp-none transition-all cursor-default">"${Utils.sanitize(h.reason)}"</p>
+                                </div>
+                            `).join('')}
+                             ${s.history.length === 0 ? '<p class="text-center text-[10px] text-slate-400 italic py-2">Belum ada riwayat</p>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 relative z-10">
+                        <button onclick="App.dispatchEvent('req-quick-add', '${s.id}')" class="py-3 bg-brand-600 hover:bg-brand-700 text-white text-[9px] font-black rounded-xl btn-press uppercase shadow-lg shadow-brand-500/20 transition-all flex flex-col items-center justify-center group/btn">
+                            <span class="text-lg mb-0.5 group-hover/btn:-translate-y-0.5 transition-transform">⚡</span>
+                            TAMBAH
+                        </button>
+                        <button onclick="App.dispatchEvent('req-toggle-status', '${s.id}')" class="py-3 bg-slate-100 dark:bg-dark-border hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-[9px] font-black rounded-xl btn-press uppercase transition-all flex flex-col items-center justify-center">
+                            <span class="text-lg mb-0.5">🔄</span>
+                            STATUS
+                        </button>
+                        <button onclick="App.dispatchEvent('req-wa', '${s.id}')" 
+                            class="py-3 ${hasWarning ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20' : 'bg-slate-300 dark:bg-slate-800 cursor-not-allowed opacity-70'} text-white text-[9px] font-black rounded-xl btn-press uppercase shadow-lg transition-all flex flex-col items-center justify-center relative overflow-hidden"
+                            title="${hasWarning ? 'Hubungi Orang Tua' : 'Belum mencapai batas peringatan (3x)'}">
+                            <span class="text-lg mb-0.5">💬</span>
+                            WHATSAPP
+                            ${!hasWarning ? '<div class="absolute inset-0 bg-slate-500/10 backdrop-blur-[1px]"></div>' : ''}
+                        </button>
+                    </div>
+                `;
+                return el;
+            }
+
+            clearList() { this.container.innerHTML = ''; }
+
+            appendCards(studentNodes) {
+                const fragment = document.createDocumentFragment();
+                studentNodes.forEach(node => fragment.appendChild(node));
+                this.container.appendChild(fragment);
+
+                // Manage sentinel visibility
+                if (this.sentinel) {
+                    this.sentinel.classList.remove('hidden');
+                    this.container.appendChild(this.sentinel); // Move sentinel to bottom
+                }
+            }
+
+            toggleLoading(isLoading) {
+                const indicator = document.getElementById('loading-indicator');
+                if (isLoading) indicator.classList.remove('hidden');
+                else indicator.classList.add('hidden');
+            }
+        }
+
+        // --- Main Controller (Mediator) ---
+        class AppController {
+            constructor() {
+                this.students = [];
+                this.isDark = false;
+                this.dom = new DOMRenderer();
+
+                // Data Entry Buffer
+                this.pendingData = null;
+
+                // Pagination/Search State
+                this.searchTerm = '';
+                this.activeFilter = 'all'; // New state
+                this.displayedCount = 0;
+                this.chunkSize = 10;
+            }
+
+            async init() {
+                try {
+                    // Load Data
+                    const rawData = StorageService.load();
+                    this.students = rawData.map(d => new StudentModel(d)); // Hydrate models
+
+                    // Load Theme
+                    this.isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                    this.applyTheme();
+
+                    this.attachGlobalListeners();
+                    this.refreshUI(true);
+
+                    console.log("App Initialized Successfully 🚀");
+                } catch (error) {
+                    this.handleCriticalError(error);
+                }
+            }
+
+            initCustomSelects() {
+                // Main Form
+                const mainSelect = document.querySelector('select[name="kelas"]');
+                if (mainSelect) new CustomSelect(mainSelect);
+
+                // Mobile Filter
+                const mobileFilter = document.getElementById('mobile-filter');
+                if (mobileFilter) this.mobileFilterSelect = new CustomSelect(mobileFilter);
+
+                // Edit Form - Will be init when modal opens or pre-init? 
+                // Since modal is hidden, we can init now.
+                const editSelect = document.querySelector('#editForm select[name="kelas"]');
+                if (editSelect) this.editFilterSelect = new CustomSelect(editSelect);
+            }
+
+            attachGlobalListeners() {
+                // Init Custom Selects
+                this.initCustomSelects();
+
+                // Event Delegation & Custom Events Wrapper
+                window.App = {
+                    dispatchEvent: (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }))
+                };
+
+                // Form Submit
+                const form = document.getElementById('mainForm');
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit(new FormData(form));
+                });
+
+                // Search
+                document.getElementById('searchBar').addEventListener('input', Utils.debounce((e) => {
+                    this.searchTerm = e.target.value;
+                    this.refreshUI(true);
+                }, 300));
+
+                // Edit Form
+                document.getElementById('editForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleEditSubmit(new FormData(e.target));
+                });
+
+                // Import Listener
+                document.getElementById('importInput').addEventListener('change', (e) => this.processImport(e));
+
+                // Filter Buttons (Desktop)
+                document.getElementById('desktop-filter-container').addEventListener('click', (e) => {
+                    const btn = e.target.closest('[data-filter]');
+                    if (btn) {
+                        this.activeFilter = btn.dataset.filter;
+                        // Sync Mobile Dropdown (Native + Custom UI)
+                        const mobileNative = document.getElementById('mobile-filter');
+                        mobileNative.value = this.activeFilter;
+                        // If using custom select wrapper, we must update it manually
+                        if (this.mobileFilterSelect) this.mobileFilterSelect.updateUI(this.activeFilter);
+
+                        this.refreshUI(true);
+                    }
+                });
+
+                // Filter Select (Mobile)
+                document.getElementById('mobile-filter').addEventListener('change', (e) => {
+                    this.activeFilter = e.target.value;
+                    this.refreshUI(true);
+                });
+
+                // Custom Actions Controller from Buttons
+                document.addEventListener('click', (e) => {
+                    const action = e.target.closest('[data-action]')?.dataset.action;
+                    if (!action) return;
+
+                    switch (action) {
+                        case 'toggle-theme': this.toggleTheme(); break;
+                        case 'open-backup': this.toggleModal('dataModal', true); break;
+                        case 'export-data': this.exportData(); break;
+                        case 'close-modal': this.closeAllModals(); break;
+                        case 'delete-all': this.deleteAllData(); break;
+                        case 'confirm-sita': this.finalizeViolation('SITA'); break;
+                        case 'confirm-catat': this.finalizeViolation('CATAT'); break;
+                    }
+                });
+
+                // Infinite Scroll Request
+                document.addEventListener('req-load-more', () => {
+                    this.loadMore();
+                });
+
+                // Student Actions (Dispatched from DOMRenderer)
+                document.addEventListener('req-delete', (e) => this.deleteStudent(e.detail));
+                document.addEventListener('req-toggle-status', (e) => this.toggleStatus(e.detail));
+                document.addEventListener('req-quick-add', (e) => this.quickAdd(e.detail));
+                document.addEventListener('req-edit', (e) => this.openEdit(e.detail));
+                document.addEventListener('req-wa', (e) => this.openWA(e.detail));
+            }
+
+            // --- Core Logic ---
+
+            refreshUI(reset = false) {
+                if (reset) {
+                    this.dom.clearList();
+                    this.displayedCount = 0;
+                }
+
+                // Filter Logic (Search + Category)
+                const filtered = this.students.filter(s => {
+                    const matchesSearch = s.nama.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                        s.kelas.toLowerCase().includes(this.searchTerm.toLowerCase());
+                    const matchesCategory = this.activeFilter === 'all' || s.kelas === this.activeFilter;
+
+                    return matchesSearch && matchesCategory;
+                });
+
+                // Update Filter Button Styles
+                document.querySelectorAll('[data-filter]').forEach(btn => {
+                    if (btn.dataset.filter === this.activeFilter) {
+                        btn.className = "px-4 py-2 bg-brand-600 text-white rounded-full text-[10px] font-bold uppercase whitespace-nowrap shadow-lg shadow-brand-500/30 transition-all scale-105";
+                    } else {
+                        btn.className = "px-4 py-2 bg-white dark:bg-dark-card text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-dark-border rounded-full text-[10px] font-bold uppercase whitespace-nowrap transition-all hover:border-brand-500 hover:text-brand-500 active:scale-95";
+                    }
+                });
+
+                // Stats always reflect full filtered set (or total set if input empty?)
+                // Usually stats reflect total DB. Let's keep it total DB for dashboard feel.
+                this.dom.renderStats(this.students);
+
+                // Pagination Logic
+                const nextBatch = filtered.slice(this.displayedCount, this.displayedCount + this.chunkSize);
+
+                if (nextBatch.length > 0) {
+                    const nodes = nextBatch.map(s => this.dom.createCard(s));
+                    this.dom.appendCards(nodes);
+                    this.displayedCount += nextBatch.length;
+
+                    // Hide sentinel if end reached
+                    if (this.displayedCount >= filtered.length) {
+                        if (this.dom.sentinel) this.dom.sentinel.classList.add('hidden');
+                    } else {
+                        if (this.dom.sentinel) this.dom.sentinel.classList.remove('hidden');
+                    }
+                } else if (reset) {
+                    // Empty State
+                    this.dom.container.innerHTML = `
+                        <div class="col-span-full flex flex-col items-center justify-center py-12 opacity-50">
+                            <span class="text-6xl block mb-4">😶‍🌫️</span>
+                            <p class="text-slate-500 dark:text-slate-400 font-bold text-lg">Data tidak ditemukan</p>
+                        </div>
+                    `;
+                    if (this.dom.sentinel) this.dom.sentinel.classList.add('hidden');
+                }
+            }
+
+            loadMore() {
+                this.dom.toggleLoading(true);
+                // Simulate network delay for UX smoothness (optional)
+                setTimeout(() => {
+                    this.refreshUI(false);
+                    this.dom.toggleLoading(false);
+                }, 300);
+            }
+
+            handleFormSubmit(formData) {
+                const data = Object.fromEntries(formData.entries());
+
+                // Validation
+                const { valid, errors } = Validator.validateStudent(data);
+                this.clearFormErrors();
+                if (!valid) {
+                    this.showFormErrors(errors);
+                    ToastSystem.show("Periksa kembali inputan Anda", "⚠️", "error");
+                    return;
+                }
+
+                this.pendingData = { ...data, isNew: true };
+                this.toggleModal('actionModal', true);
+            }
+
+            finalizeViolation(mode) {
+                // Determine source
+                let student;
+
+                if (this.pendingData.isNew) {
+                    // Check duplicate name logic? Skipped for now, allowing same names
+                    // BUT, smart check: if strict match name AND kelas, maybe prompt? 
+                    // Let's assume new entry every time for registration form as per old logic
+                    // Actually old logic checked existing. Let's replicate smart check.
+                    const existing = this.students.find(s => s.nama.toLowerCase() === this.pendingData.nama.toLowerCase() && s.kelas.toLowerCase() === this.pendingData.kelas.toLowerCase());
+
+                    if (existing) {
+                        existing.addViolation(this.pendingData.alasan, mode);
+                        ToastSystem.show("Data siswa lama diperbarui!");
+                        student = existing;
+
+                        // Re-sort to top
+                        this.students = this.students.filter(s => s !== existing);
+                        this.students.unshift(existing);
+                    } else {
+                        student = new StudentModel(this.pendingData);
+                        student.addViolation(this.pendingData.alasan, mode);
+                        this.students.unshift(student);
+                        ToastSystem.show("Siswa Baru Ditambahkan!", "🎉");
+                    }
+                } else if (this.pendingData.isQuick) {
+                    student = this.students.find(s => s.id === this.pendingData.studentId);
+                    if (student) {
+                        student.addViolation(this.pendingData.alasan, mode);
+                        ToastSystem.show("Pelanggaran ditambahkan!");
+
+                        // Move to top
+                        this.students = this.students.filter(s => s.id !== student.id);
+                        this.students.unshift(student);
+                    }
+                }
+
+                this.saveState();
+                this.closeAllModals();
+                document.getElementById('mainForm').reset();
+                this.pendingData = null;
+            }
+
+            saveState() {
+                StorageService.save(this.students);
+                this.refreshUI(true);
+            }
+
+            // --- Feature Implementations ---
+
+            deleteStudent(id) {
+                // Confirm dialog? Native for now.
+                if (confirm("Apakah Anda yakin menghapus data ini secara permanen?")) {
+                    this.students = this.students.filter(s => s.id !== id);
+                    this.saveState();
+                    ToastSystem.show("Data dihapus", "🗑️");
+                }
+            }
+
+            quickAdd(id) {
+                const reason = prompt("Masukkan detail pelanggaran:"); // Keep simple prompt for quick action
+                if (!reason) return;
+
+                this.pendingData = { studentId: id, alasan: reason, isQuick: true };
+                this.toggleModal('actionModal', true);
+            }
+
+            toggleStatus(id) {
+                const s = this.students.find(x => x.id === id);
+                if (s) {
+                    s.toggleStatus();
+                    this.saveState();
+                    ToastSystem.show(`Status diubah menjadi: ${s.statusSitaan}`);
+                }
+            }
+
+            openEdit(id) {
+                const s = this.students.find(x => x.id === id);
+                if (!s) return;
+
+                const form = document.getElementById('editForm');
+                // Fill Data
+                form.id.value = s.id;
+                form.nama.value = s.nama;
+                form.kelas.value = s.kelas;
+
+                // Update Custom Select UI for Edit Modal
+                if (this.editFilterSelect) this.editFilterSelect.updateUI(s.kelas);
+
+                form.telpSiswa.value = s.telpSiswa;
+                form.telpOrtu.value = s.telpOrtu;
+
+                this.toggleModal('editModal', true);
+            }
+
+            handleEditSubmit(formData) {
+                const data = Object.fromEntries(formData.entries());
+                const s = this.students.find(x => x.id === data.id);
+
+                if (s) {
+                    s.nama = data.nama;
+                    s.kelas = data.kelas;
+                    s.telpSiswa = data.telpSiswa;
+                    s.telpOrtu = data.telpOrtu;
+                    this.saveState();
+                    this.closeAllModals();
+                    ToastSystem.show("Data diperbarui!");
+                }
+            }
+
+            openWA(id) {
+                const s = this.students.find(x => x.id === id);
+                if (!s) return;
+
+                if (s.history.length < 3) {
+                    ToastSystem.show(`Pelanggaran baru ${s.history.length}x. Belum perlu lapor WA.`, "info");
+                    return;
+                }
+
+                if (!s.telpOrtu) {
+                    ToastSystem.show("Nomor Ortu belum diisi!", "⚠️", "error");
+                    return;
+                }
+
+                const msg = `Pemberitahuan SMKN 1 Malteng: Siswa a.n ${s.nama} (${s.kelas}) tercatat melakukan ${s.history.length} pelanggaran. Mohon ke sekolah untuk tindak lanjut.`;
+                const url = `https://wa.me/${s.telpOrtu.replace(/^0/, '62').replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+                window.open(url, '_blank');
+            }
+
+            // --- Data Handling ---
+            deleteAllData() {
+                const confirmation = prompt("⚠️ PERINGATAN KERAS ⚠️\n\nSemua data akan dihapus permanen dan tidak bisa dikembalikan.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+                if (confirmation === 'HAPUS') {
+                    this.students = [];
+                    this.saveState();
+                    this.closeAllModals();
+                    ToastSystem.show("Database berhasil di-reset total.", "💥");
+                } else if (confirmation !== null) {
+                    ToastSystem.show("Penghapusan dibatalkan. Kode salah.", "info");
+                }
+            }
+
+            exportData() {
+                const blob = new Blob([JSON.stringify(this.students, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `RAZIA_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                ToastSystem.show("Backup berhasil diunduh");
+            }
+
+            processImport(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const json = JSON.parse(ev.target.result);
+                        if (Array.isArray(json)) {
+                            this.students = json.map(j => new StudentModel(j));
+                            this.saveState();
+                            ToastSystem.show("Data berhasil direstore!", "✅");
+                        } else {
+                            throw new Error("Invalid format");
+                        }
+                    } catch (err) {
+                        ToastSystem.show("File corrupt atau format salah", "❌", "error");
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = ''; // reset
+                this.closeAllModals();
+            }
+
+            // --- Theme & UI Helpers ---
+            toggleTheme() {
+                this.isDark = !this.isDark;
+                this.applyTheme();
+            }
+
+            applyTheme() {
+                if (this.isDark) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.theme = 'dark';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.theme = 'light';
+                }
+            }
+
+            toggleModal(id, show) {
+                const el = document.getElementById(id);
+                if (show) {
+                    el.classList.remove('hidden');
+                    // slight delay for animation
+                    requestAnimationFrame(() => el.classList.add('modal-active'));
+                } else {
+                    el.classList.remove('modal-active');
+                    setTimeout(() => el.classList.add('hidden'), 300);
+                }
+            }
+
+            closeAllModals() {
+                document.querySelectorAll('.modal-active').forEach(el => {
+                    this.toggleModal(el.id, false);
+                });
+            }
+
+            showFormErrors(errors) {
+                for (const [key, msg] of Object.entries(errors)) {
+                    const p = document.querySelector(`[data-error="${key}"]`);
+                    if (p) {
+                        p.innerText = msg;
+                        p.classList.remove('hidden');
+                        p.previousElementSibling?.classList.add('border-red-500');
+                    }
+                }
+            }
+
+            clearFormErrors() {
+                document.querySelectorAll('[data-error]').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('input, textarea').forEach(el => el.classList.remove('border-red-500'));
+            }
+
+            handleCriticalError(err) {
+                // Show Global Error UI
+                const box = document.getElementById('global-error');
+                const msg = document.getElementById('error-message');
+                msg.innerText = err.message || "Terjadi kesalahan sistem.";
+                box.classList.remove('hidden');
+                box.classList.add('flex');
+            }
+        }
+
+        // --- Entry Point ---
+        window.onerror = function (msg, url, line) {
+            console.error("Global Error Caught:", msg);
+            // In a real app, send to Sentry/LogRocket
+        };
+
+        const app = new AppController();
+        document.addEventListener('DOMContentLoaded', () => app.init());
+
+    </script>
+</body>
+
+</html>
